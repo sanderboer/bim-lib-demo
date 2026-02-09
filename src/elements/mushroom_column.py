@@ -30,15 +30,12 @@ def _coerce_point3d(p) -> rg.Point3d:
 def mushroom_column(
     base_point,
     height_mm: float = 3200,
-
     shaft_radius_mm: float = 250,
     capital_radius_mm: float = 600,
     capital_height_mm: float = 450,
-
     slab_thickness_mm: float = 300,
     slab_radius_mm: float = 1200,
-
-    fillet_radius_mm: float = 0
+    fillet_radius_mm: float = 0,
 ) -> List[rg.Brep]:
 
     # --------------------------------------------------
@@ -64,9 +61,7 @@ def mushroom_column(
     shaft_circle = rg.Circle(shaft_plane, shaft_radius_mm)
 
     shaft = rg.Extrusion.Create(
-        shaft_circle.ToNurbsCurve(),
-        height_mm - capital_height_mm,
-        True
+        shaft_circle.ToNurbsCurve(), height_mm - capital_height_mm, True
     )
     if shaft:
         breps.append(shaft.ToBrep())
@@ -88,7 +83,7 @@ def mushroom_column(
         rg.Point3d.Unset,
         rg.Point3d.Unset,
         rg.LoftType.Straight,
-        False
+        False,
     )
 
     if loft and len(loft) > 0:
@@ -101,11 +96,7 @@ def mushroom_column(
     slab_plane = rg.Plane(cap_top_pt, z_axis)
     slab_circle = rg.Circle(slab_plane, slab_radius_mm)
 
-    slab = rg.Extrusion.Create(
-        slab_circle.ToNurbsCurve(),
-        slab_thickness_mm,
-        True
-    )
+    slab = rg.Extrusion.Create(slab_circle.ToNurbsCurve(), slab_thickness_mm, True)
     if slab:
         breps.append(slab.ToBrep())
 
@@ -122,7 +113,7 @@ def mushroom_column(
                     [fillet_radius_mm] * joined[0].Edges.Count,
                     [fillet_radius_mm] * joined[0].Edges.Count,
                     rg.BlendType.Fillet,
-                    0.01
+                    0.01,
                 )
                 if filleted:
                     breps = filleted

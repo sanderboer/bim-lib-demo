@@ -8,17 +8,14 @@ def louvers(
     guide,
     spacing_mm: float,
     angle_fn: Callable[[float], float],
-
     depth_mm: float,
     thickness_mm: float = 20,
     height_mm: float = 2000,
-
     story_height_mm: float = 3200,
     stories: int = 1,
-
     wave_amplitude_mm: float = 80,
     wave_frequency: float = 1.0,
-    twist_amplitude_rad: float = 0.2
+    twist_amplitude_rad: float = 0.2,
 ) -> List[rg.Brep]:
     """
     Generate solid louvres along a guide curve using spacing-based logic.
@@ -107,18 +104,16 @@ def louvers(
             # ------------------------------------------
             base_angle = angle_fn(t)
 
-            local_twist = math.sin(
-                t * math.pi * 2 * wave_frequency
-            ) * twist_amplitude_rad
+            local_twist = (
+                math.sin(t * math.pi * 2 * wave_frequency) * twist_amplitude_rad
+            )
 
             angle = base_angle + local_twist
 
             # ------------------------------------------
             # Shape modulation
             # ------------------------------------------
-            wave = math.sin(
-                t * math.pi * 2 * wave_frequency
-            )
+            wave = math.sin(t * math.pi * 2 * wave_frequency)
 
             depth = depth_mm + wave * wave_amplitude_mm
             thickness = thickness_mm + wave * (wave_amplitude_mm * 0.4)
@@ -129,11 +124,7 @@ def louvers(
             plane = rg.Plane(pt, rg.Vector3d.ZAxis)
             plane.Rotate(angle, plane.ZAxis)
 
-            rect = rg.Rectangle3d(
-                plane,
-                float(depth),
-                float(thickness)
-            )
+            rect = rg.Rectangle3d(plane, float(depth), float(thickness))
 
             profile = rect.ToNurbsCurve()
 
